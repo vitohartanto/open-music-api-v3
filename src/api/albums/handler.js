@@ -67,4 +67,4 @@ class AlbumsHandler {
   };
 }
 
-module.exports = NotesHandler;
+module.exports = AlbumsHandler;

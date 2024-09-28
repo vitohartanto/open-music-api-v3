@@ -4,7 +4,7 @@ const Hapi = require('@hapi/hapi');
 const albums = require('./api/albums');
 const routes = require('./routes');
 const AlbumsService = require('./services/postgres/AlbumsService');
-const ClientError = require('../src/exceptions/ClientError');
+const ClientError = require('./exceptions/ClientError');
 
 const init = async () => {
   const albumsService = new AlbumsService();
