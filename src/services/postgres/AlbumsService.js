@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
+const { mapDBToAlbumModel, mapDBToSongModel } = require('../../utils/index');
 
 class AlbumsService {
   constructor() {
@@ -27,7 +28,7 @@ class AlbumsService {
 
   getAlbums = async () => {
     const result = await this._pool.query('SELECT * FROM albums');
-    return result.rows.map(mapDBToModel);
+    return result.rows.map(mapDBToAlbumModel);
   };
 
   getAlbumById = async (id) => {
@@ -42,7 +43,7 @@ class AlbumsService {
       throw new NotFoundError('Album tidak ditemukan');
     }
 
-    return result.rows.map(mapDBToModel)[0];
+    return result.rows.map(mapDBToSongModel)[0];
   };
 
   editAlbumById = async (id, { name, year }) => {
