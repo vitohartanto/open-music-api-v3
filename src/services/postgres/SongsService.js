@@ -23,9 +23,9 @@ class SongsService {
         genre,
         performer,
         duration,
-        albumId,
         createdAt,
         updatedAt,
+        albumId,
       ],
     };
 
@@ -38,8 +38,28 @@ class SongsService {
     return result.rows[0].id;
   };
 
-  getSongs = async () => {
-    const result = await this._pool.query('SELECT * FROM songs');
+  getSongs = async (title, performer) => {
+    let query = '';
+    if (title && performer) {
+      query = {
+        text: 'SELECT id, title, performer FROM songs WHERE LOWER(title) LIKE $1 AND LOWER(performer) LIKE $2',
+        values: [`%${title.toLowerCase()}%`, `%${performer.toLowerCase()}%`],
+      };
+    } else if (title) {
+      query = {
+        text: 'SELECT id, title, performer FROM songs WHERE LOWER(title) LIKE $1',
+        values: [`%${title.toLowerCase()}%`],
+      };
+    } else if (performer) {
+      query = {
+        text: 'SELECT id, title, performer FROM songs WHERE LOWER(performer) LIKE $1',
+        values: [`%${performer.toLowerCase()}%`],
+      };
+    } else {
+      query = 'SELECT id, title, performer FROM songs';
+    }
+
+    const result = await this._pool.query(query);
     return result.rows.map(mapDBToSongModel);
   };
 
@@ -58,15 +78,12 @@ class SongsService {
     return result.rows.map(mapDBToSongModel)[0];
   };
 
-  editSongById = async (
-    id,
-    { title, year, genre, performer, duration, albumId }
-  ) => {
+  editSongById = async (id, { title, year, performer, genre, duration }) => {
     const updatedAt = new Date().toISOString();
 
     const query = {
-      text: 'UPDATE songs SET title = $1, year = $2, genre = $3, performer: $4, duration: $5, albumId = $6, updated_at = $7 WHERE id = $8 RETURNING id',
-      values: [title, year, genre, performer, duration, albumId, updatedAt, id],
+      text: 'UPDATE songs SET title = $1, year = $2, performer = $3, genre = $4, duration = $5, updated_at = $6 WHERE id = $7 RETURNING id',
+      values: [title, year, performer, genre, duration, updatedAt, id],
     };
 
     const result = await this._pool.query(query);

@@ -33,19 +33,49 @@ class AlbumsService {
     return result.rows.map(mapDBToAlbumModel);
   };
 
+  // getAlbumById = async (id) => {
+  //   const query = {
+  //     text: 'SELECT * FROM albums WHERE id = $1',
+  //     values: [id],
+  //   };
+
+  //   const result = await this._pool.query(query);
+
+  //   if (!result.rows.length) {
+  //     throw new NotFoundError('Album tidak ditemukan');
+  //   }
+
+  //   return result.rows.map(mapDBToAlbumModel)[0];
+  // };
+
   getAlbumById = async (id) => {
-    const query = {
+    // Query untuk mengambil detail album berdasarkan albumId
+    const albumQuery = {
       text: 'SELECT * FROM albums WHERE id = $1',
       values: [id],
     };
 
-    const result = await this._pool.query(query);
+    const albumResult = await this._pool.query(albumQuery);
 
-    if (!result.rows.length) {
+    // Jika album tidak ditemukan
+    if (!albumResult.rows.length) {
       throw new NotFoundError('Album tidak ditemukan');
     }
 
-    return result.rows.map(mapDBToAlbumModel)[0];
+    // Query untuk mengambil lagu-lagu berdasarkan albumId
+    const songsQuery = {
+      text: 'SELECT id, title, performer FROM songs WHERE album_id = $1',
+      values: [id],
+    };
+
+    const songsResult = await this._pool.query(songsQuery);
+
+    // Gabungkan album dan lagu-lagu ke dalam satu object
+    const album = albumResult.rows.map(mapDBToAlbumModel)[0]; // memetakan hasil album ke model
+    album.songs = songsResult.rows; // menambahkan properti songs ke album
+
+    // Mengembalikan response album dengan daftar lagu
+    return album;
   };
 
   editAlbumById = async (id, { name, year }) => {

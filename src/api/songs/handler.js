@@ -25,19 +25,24 @@ class SongsHandler {
       status: 'success',
       message: 'Lagu berhasil ditambahkan',
       data: {
-        albumId,
+        songId,
       },
     });
     response.code(201);
     return response;
   };
 
-  getSongsHandler = async () => {
-    const songs = await this._service.getSongs();
+  getSongsHandler = async (request) => {
+    const { title, performer } = request.query;
+    const songs = await this._service.getSongs(title, performer);
     return {
       status: 'success',
       data: {
-        songs,
+        songs: songs.map((song) => ({
+          id: song.id,
+          title: song.title,
+          performer: song.performer,
+        })),
       },
     };
   };
