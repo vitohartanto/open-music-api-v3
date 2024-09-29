@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 const NotFoundError = require('../../exceptions/NotFoundError');
 const InvariantError = require('../../exceptions/InvariantError');
-const { mapDBToAlbumModel, mapDBToSongModel } = require('../../utils/index');
+const { mapDBToAlbumModel } = require('../../utils/index');
 
 class AlbumsService {
   constructor() {
@@ -15,7 +15,7 @@ class AlbumsService {
     const updatedAt = createdAt;
 
     const query = {
-      text: 'INSERT INTO albums VALUES($1 $2 $3 $4 $5) RETURNING id',
+      text: 'INSERT INTO albums VALUES($1, $2, $3, $4, $5) RETURNING id',
       values: [id, name, year, createdAt, updatedAt],
     };
 
@@ -45,7 +45,7 @@ class AlbumsService {
       throw new NotFoundError('Album tidak ditemukan');
     }
 
-    return result.rows.map(mapDBToSongModel)[0];
+    return result.rows.map(mapDBToAlbumModel)[0];
   };
 
   editAlbumById = async (id, { name, year }) => {

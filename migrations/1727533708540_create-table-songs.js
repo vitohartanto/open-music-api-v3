@@ -35,15 +35,21 @@ exports.up = (pgm) => {
     },
     created_at: {
       type: 'TIMESTAMP',
-      notNull: true,
     },
     updated_at: {
       type: 'TIMESTAMP',
-      notNull: true,
     },
     album_id: {
       type: 'VARCHAR(50)',
       references: 'albums(id)',
+    },
+  });
+
+  pgm.addConstraint('songs', 'fk_songs_album_id', {
+    foreignKeys: {
+      columns: 'album_id',
+      references: 'albums(id)',
+      onDelete: 'cascade',
     },
   });
 };
