@@ -57,6 +57,28 @@ class UsersService {
     }
     return result.rows[0];
   }
+
+  // Verifikasi apakah kredensial atau username dan password yang dikirimkan oleh pengguna benar atau tidak
+  async verifyUserCredential(username, password) {
+    const query = {
+      text: 'SELECT id, password FROM users WHERE username = $1',
+      values: [username],
+    };
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new AuthenticationError('Kredensial yang Anda berikan salah');
+    }
+
+    const { id, password: hashedPassword } = result.rows[0];
+    const match = await bcrypt.compare(password, hashedPassword);
+
+    if (!match) {
+      throw new AuthenticationError('Kredensial yang Anda berikan salah');
+    }
+
+    // Nilai user id tersebut nantinya akan digunakan dalam membuat access token dan refresh token
+    return id;
+  }
 }
 
 module.exports = UsersService;
