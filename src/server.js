@@ -16,7 +16,7 @@ const SongsValidator = require('./validator/songs');
 // Users
 const users = require('./api/users');
 const UsersService = require('./services/postgres/UsersService');
-const UsersValidator = require('./validator/songs');
+const UsersValidator = require('./validator/users');
 
 // Authentications
 const authentications = require('./api/authentications');
@@ -68,7 +68,7 @@ const init = async () => {
 
   // mendefinisikan strategy autentikasi jwt
   server.auth.strategy('openmusic_jwt', 'jwt', {
-    key: process.env.ACCESS_TOKEN_KEY,
+    keys: process.env.ACCESS_TOKEN_KEY,
     verify: {
       aud: false,
       iss: false,

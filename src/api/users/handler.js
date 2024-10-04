@@ -7,8 +7,6 @@ class UsersHandler {
     this.getUserByIdHandler = this.getUserByIdHandler.bind(this);
   }
 
-  // Kode lain disembunyikan
-
   async postUserHandler(request, h) {
     this._validator.validateUserPayload(request.payload);
     const { username, password, fullname } = request.payload;

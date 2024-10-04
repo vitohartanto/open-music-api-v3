@@ -30,6 +30,17 @@ class UsersService {
     return result.rows[0].id;
   }
 
+  async verifyUser(id) {
+    const query = {
+      text: 'SELECT * FROM users WHERE id = $1',
+      values: [id],
+    };
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new NotFoundError('User tidak ditemukan');
+    }
+  }
+
   async verifyNewUsername(username) {
     const query = {
       text: 'SELECT username FROM users WHERE username = $1',
@@ -78,6 +89,15 @@ class UsersService {
 
     // Nilai user id tersebut nantinya akan digunakan dalam membuat access token dan refresh token
     return id;
+  }
+
+  async getUsersByUsername(username) {
+    const query = {
+      text: 'SELECT id, username, fullname FROM users WHERE username LIKE $1',
+      values: [`%${username}%`],
+    };
+    const result = await this._pool.query(query);
+    return result.rows;
   }
 }
 
