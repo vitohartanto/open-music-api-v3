@@ -123,6 +123,14 @@ const init = async () => {
         validator: PlaylistValidator,
       },
     },
+    {
+      plugin: collaborations,
+      options: {
+        collaborationsService,
+        playlistsService,
+        validator: CollaborationsValidator,
+      },
+    },
   ]);
 
   // Error handling
