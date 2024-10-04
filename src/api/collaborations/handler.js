@@ -1,21 +1,32 @@
+const autoBind = require('auto-bind');
+
 class CollaborationsHandler {
-  constructor(collaborationsService, notesService, validator) {
+  constructor(
+    collaborationsService,
+    usersService,
+    playlistsService,
+    validator
+  ) {
     this._collaborationsService = collaborationsService;
-    this._notesService = notesService;
+    this._usersService = usersService;
+    this._playlistsService = playlistsService;
     this._validator = validator;
+
+    autoBind(this);
   }
 
   async postCollaborationHandler(request, h) {
     this._validator.validateCollaborationPayload(request.payload);
+    const { playlistId, userId } = request.payload;
     const { id: credentialId } = request.auth.credentials;
-    const { noteId, userId } = request.payload;
+    await this._usersService.verifyUser(userId);
+    await this._playlistsService.verifyPlaylist(playlistId);
+    await this._playlistsService.verifyPlaylistOwner(playlistId, credentialId);
 
-    await this._notesService.verifyNoteOwner(noteId, credentialId);
     const collaborationId = await this._collaborationsService.addCollaboration(
-      noteId,
+      playlistId,
       userId
     );
-
     const response = h.response({
       status: 'success',
       message: 'Kolaborasi berhasil ditambahkan',
@@ -23,18 +34,20 @@ class CollaborationsHandler {
         collaborationId,
       },
     });
+
     response.code(201);
     return response;
   }
 
   async deleteCollaborationHandler(request) {
     this._validator.validateCollaborationPayload(request.payload);
+    const { playlistId, userId } = request.payload;
     const { id: credentialId } = request.auth.credentials;
-    const { noteId, userId } = request.payload;
+    await this._usersService.verifyUser(userId);
+    await this._playlistsService.verifyPlaylist(playlistId);
+    await this._playlistsService.verifyPlaylistOwner(playlistId, credentialId);
 
-    await this._notesService.verifyNoteOwner(noteId, credentialId);
-    await this._collaborationsService.deleteCollaboration(noteId, userId);
-
+    await this._collaborationsService.deleteCollaboration(playlistId, userId);
     return {
       status: 'success',
       message: 'Kolaborasi berhasil dihapus',

@@ -47,7 +47,7 @@ class CollaborationsService {
 
     const result = await this._pool.query(query);
     if (!result.rowCount) {
-      throw new InvariantError('Tidak memiliki kolaborasi');
+      throw new InvariantError('Tidak terdapat kolaborasi');
     }
   }
 }
