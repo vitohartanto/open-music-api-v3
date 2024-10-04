@@ -21,6 +21,7 @@ const TokenManager = {
       //   Nilai payload tersebut nantinya akan digunakan dalam membuat akses token baru
       const { payload } = artifacts.decoded;
       return payload;
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       throw new InvariantError('Refresh token tidak valid');
     }
