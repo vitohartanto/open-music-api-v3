@@ -7,7 +7,7 @@ class UsersHandler {
     this.getUserByIdHandler = this.getUserByIdHandler.bind(this);
   }
 
-  async postUserHandler(request, h) {
+  postUserHandler = async (request, h) => {
     this._validator.validateUserPayload(request.payload);
     const { username, password, fullname } = request.payload;
 
@@ -26,9 +26,9 @@ class UsersHandler {
     });
     response.code(201);
     return response;
-  }
+  };
 
-  async getUserByIdHandler(request) {
+  getUserByIdHandler = async (request) => {
     const { id } = request.params;
 
     const user = await this._service.getUserById(id);
@@ -39,7 +39,7 @@ class UsersHandler {
         user,
       },
     };
-  }
+  };
 }
 
 module.exports = UsersHandler;

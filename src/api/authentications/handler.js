@@ -11,7 +11,7 @@ class AuthenticationsHandler {
       this.deleteAuthenticationHandler.bind(this);
   }
 
-  async postAuthenticationHandler(request, h) {
+  postAuthenticationHandler = async (request, h) => {
     this._validator.validatePostAuthenticationPayload(request.payload);
     const { username, password } = request.payload;
 
@@ -38,9 +38,9 @@ class AuthenticationsHandler {
     });
     response.code(201);
     return response;
-  }
+  };
 
-  async putAuthenticationHandler(request) {
+  putAuthenticationHandler = async (request) => {
     // Memastikan payload request mengandung properti refreshToken yang bernilai string
     this._validator.validatePutAuthenticationPayload(request.payload);
 
@@ -58,9 +58,9 @@ class AuthenticationsHandler {
         accessToken,
       },
     };
-  }
+  };
 
-  async deleteAuthenticationHandler(request) {
+  deleteAuthenticationHandler = async (request) => {
     this._validator.validateDeleteAuthenticationPayload(request.payload);
     const { refreshToken } = request.payload;
     await this._authenticationsService.verifyRefreshToken(refreshToken);
@@ -69,7 +69,7 @@ class AuthenticationsHandler {
       status: 'success',
       message: 'Refresh token berhasil dihapus',
     };
-  }
+  };
 }
 
 module.exports = AuthenticationsHandler;

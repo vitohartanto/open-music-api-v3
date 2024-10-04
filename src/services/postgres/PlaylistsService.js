@@ -19,7 +19,7 @@ class PlaylistsService {
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new InvariantError('Gagal menambahkan playlist');
+      throw new InvariantError('Playlist gagal ditambahkan');
     }
 
     return result.rows[0].id;
@@ -64,7 +64,7 @@ class PlaylistsService {
     };
     const result = await this._pool.query(query);
     if (!result.rowCount) {
-      throw new InvariantError('Gagal menghapus playlist');
+      throw new InvariantError('Playlist gagal dihapus');
     }
   }
 
@@ -77,7 +77,7 @@ class PlaylistsService {
 
     const result = await this._pool.query(query);
     if (!result.rowCount) {
-      throw new InvariantError('Gagal menambahkan playlist song');
+      throw new InvariantError('Playlist song gagal ditambahkan');
     }
     return result.rows[0].id;
   }
@@ -107,7 +107,7 @@ class PlaylistsService {
 
     const result = await this._pool.query(query);
     if (!result.rowCount) {
-      throw new InvariantError('Gagal menghapus playlist song');
+      throw new InvariantError('Playlist song gagal dihapus');
     }
   }
 
