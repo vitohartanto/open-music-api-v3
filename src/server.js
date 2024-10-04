@@ -46,6 +46,7 @@ const init = async () => {
   const authenticationsService = new AuthenticationsService();
   const collaborationsService = new CollaborationsService();
   const playlistsService = new PlaylistsService(collaborationsService);
+  const activitiesService = new ActivitiesService();
 
   // Membuat server di port 5000
   const server = Hapi.server({
@@ -127,6 +128,7 @@ const init = async () => {
       plugin: collaborations,
       options: {
         collaborationsService,
+        usersService,
         playlistsService,
         validator: CollaborationsValidator,
       },
